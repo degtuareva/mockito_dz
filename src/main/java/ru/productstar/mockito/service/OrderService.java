@@ -1,6 +1,9 @@
 package ru.productstar.mockito.service;
 
 import ru.productstar.mockito.ProductNotFoundException;
+import ru.productstar.mockito.delivery.DeliveryCostCalculator;
+import ru.productstar.mockito.delivery.Size;
+import ru.productstar.mockito.delivery.Workload;
 import ru.productstar.mockito.model.Delivery;
 import ru.productstar.mockito.model.Order;
 import ru.productstar.mockito.model.Warehouse;
@@ -38,12 +41,15 @@ public class OrderService {
             throw new ProductNotFoundException(productName);
         }
 
-
         Delivery delivery = new Delivery(
                 productRepository.getByName(productName),
                 wh,
                 warehouseService.getStock(wh, productName).getPrice(),
                 count);
         return orderRepository.addDelivery(order.getId(), delivery);
+    }
+
+    public int calculateDeliveryCost(int distanceKm, Size size, boolean fragile, Workload workload) {
+        return DeliveryCostCalculator.calculateCost(distanceKm, size, fragile, workload);
     }
 }

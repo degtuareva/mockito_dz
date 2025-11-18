@@ -9,6 +9,11 @@ public class Warehouse {
     private int distance;
     private List<Stock> stocks = new ArrayList<>();
 
+
+    public Warehouse(List<Stock> stocks) {
+        this.stocks = stocks;
+    }
+
     public Warehouse() {
     }
 

@@ -1,5 +1,7 @@
 package ru.productstar.mockito;
 
+import ru.productstar.mockito.delivery.Size;
+import ru.productstar.mockito.delivery.Workload;
 import ru.productstar.mockito.model.Order;
 import ru.productstar.mockito.repository.InitRepository;
 import ru.productstar.mockito.service.CustomerService;
@@ -11,6 +13,13 @@ public class Main {
         OrderService orderService = getOrderService();
         Order order = orderService.create("OLGA");
         System.out.println("Создан заказ для клиента: " + order.getCustomer().getName());
+        int distanceKm = 15;
+        Size size = Size.LARGE;
+        boolean fragile = false;
+        Workload workload = Workload.MODERATE;
+
+        int deliveryCost = orderService.calculateDeliveryCost(distanceKm, size, fragile, workload);
+        System.out.println("Стоимость доставки для заказа: " + deliveryCost);
 
         try {
             order = orderService.addProduct(order, "phone", 2, false);
@@ -19,7 +28,11 @@ public class Main {
             order = orderService.addProduct(order, "laptop", 1, true);
             System.out.println("Общая сумма после добавления ноутбука с доставкой: " +
                     order.getTotal());
-        } catch(Exception e) {
+            order = orderService.addProduct(order, "printer", 1, true);
+            System.out.println("Общая сумма после добавления принтера с доставкой: " +
+                    order.getTotal());
+
+        } catch (Exception e) {
             System.out.println("Ошибка при добавлении продукта: " + e.getMessage());
         }
     }

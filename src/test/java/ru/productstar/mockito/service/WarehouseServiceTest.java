@@ -4,10 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.productstar.mockito.delivery.Size;
+import ru.productstar.mockito.delivery.Workload;
+import ru.productstar.mockito.model.Product;
 import ru.productstar.mockito.model.Stock;
 import ru.productstar.mockito.model.Warehouse;
 import ru.productstar.mockito.repository.WarehouseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -95,5 +99,31 @@ public class WarehouseServiceTest {
         assertNull(closest3);
 
         verify(warehouseRepository, atLeastOnce()).all();
+    }
+
+    @Test
+    void canCreateWarehouseServiceWithRepository() {
+        WarehouseRepository repo = mock(WarehouseRepository.class);
+        WarehouseService svc = new WarehouseService(repo);
+        assertNotNull(svc);
+    }
+
+    @Test
+    void getStockReturnsCorrectStock() {
+        Product someProduct = new Product("phone");
+        Stock stock = new Stock(someProduct, 10, 1000);
+        List<Stock> stocks = new ArrayList<>();
+        stocks.add(stock);
+        Warehouse warehouse = new Warehouse(stocks);
+        WarehouseService svc = new WarehouseService();
+        Stock result = svc.getStock(warehouse, "phone");
+        assertEquals(stock, result);
+    }
+
+    @Test
+    void testCalculateDeliveryCostDelegatesCorrectly() {
+        WarehouseService svc = new WarehouseService();
+        int cost = svc.calculateDeliveryCost(5, Size.LARGE, false, Workload.MODERATE);
+        assertEquals(400, cost);
     }
 }

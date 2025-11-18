@@ -1,5 +1,8 @@
 package ru.productstar.mockito.service;
 
+import ru.productstar.mockito.delivery.DeliveryCostCalculator;
+import ru.productstar.mockito.delivery.Size;
+import ru.productstar.mockito.delivery.Workload;
 import ru.productstar.mockito.model.Stock;
 import ru.productstar.mockito.model.Warehouse;
 import ru.productstar.mockito.repository.WarehouseRepository;
@@ -21,7 +24,7 @@ public class WarehouseService {
 
     public Stock getStock(Warehouse wh, String productName) {
         for (Stock s : wh.getStocks()) {
-            if(s.getProduct().getName().equals(productName)) {
+            if (s.getProduct().getName().equals(productName)) {
                 return s;
             }
         }
@@ -51,12 +54,16 @@ public class WarehouseService {
     private List<Warehouse> findWarehouses(String productName, int count) {
         List<Warehouse> whs = new ArrayList<>();
         for (Warehouse wh : warehouseRepository.all()) {
-            for(Stock s : wh.getStocks()) {
-                if(s.getProduct().getName().equals(productName) && s.getCount() >= count) {
+            for (Stock s : wh.getStocks()) {
+                if (s.getProduct().getName().equals(productName) && s.getCount() >= count) {
                     whs.add(wh);
                 }
             }
         }
         return whs;
+    }
+
+    public int calculateDeliveryCost(int distanceKm, Size size, boolean fragile, Workload workload) {
+        return DeliveryCostCalculator.calculateCost(distanceKm, size, fragile, workload);
     }
 }
